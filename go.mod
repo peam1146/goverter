@@ -1,4 +1,4 @@
-module github.com/peam1146/goverter
+module github.com/jmattheis/goverter
 
 go 1.16
 
