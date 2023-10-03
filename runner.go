@@ -35,6 +35,8 @@ type GenerateConfig struct {
 	MatchFieldsIgnoreCase bool
 	// Add comment on generated structs
 	CommentOnStruct string
+	// Replace {{.packageName}} with the package name and {{.converterName}} with the converter name
+	CommentTemplate bool
 }
 
 // GenerateConverter generates converters.
@@ -56,6 +58,7 @@ func GenerateConverter(c GenerateConfig) ([]byte, error) {
 		IgnoreUnexportedFields: c.IgnoredUnexportedFields,
 		MatchFieldsIgnoreCase:  c.MatchFieldsIgnoreCase,
 		CommentOnStruct:        c.CommentOnStruct,
+		CommentTemplate:        c.CommentTemplate,
 	})
 	if err != nil {
 		return nil, err

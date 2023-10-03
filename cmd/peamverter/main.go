@@ -21,6 +21,8 @@ func main() {
 		"if set, unexported fields on structs are ignored")
 	matchFieldsIgnoreCase := flag.Bool("matchFieldsIgnoreCase", false,
 		"if set, struct fields will be matched case-insensitively")
+	commentTemplate := flag.Bool("commentTemplate", true,
+		"if set, the comment with {{.packageName}} and {{.converterName}} will be used as template for the generated comment")
 
 	flag.Parse()
 
@@ -44,6 +46,7 @@ func main() {
 		IgnoredUnexportedFields: *ignoreUnexportedFields,
 		MatchFieldsIgnoreCase:   *matchFieldsIgnoreCase,
 		CommentOnStruct:         *commentOnStruct,
+		CommentTemplate:         *commentTemplate,
 	})
 	if err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

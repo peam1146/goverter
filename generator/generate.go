@@ -3,6 +3,7 @@ package generator
 import (
 	"fmt"
 	"go/types"
+	"strings"
 
 	"github.com/dave/jennifer/jen"
 	"github.com/jmattheis/goverter/builder"
@@ -21,6 +22,7 @@ type Config struct {
 	IgnoreUnexportedFields bool
 	MatchFieldsIgnoreCase  bool
 	CommentOnStruct        string
+	CommentTemplate        bool
 }
 
 // BuildSteps that'll used for generation.
@@ -47,7 +49,7 @@ func Generate(pattern string, mapping []comments.Converter, config Config) (*jen
 			return nil, fmt.Errorf("%s: could not find %s", pattern, converter.Name)
 		}
 
-		file.Comment(config.CommentOnStruct)
+		generateCommentOnStruct(file, converter, config)
 
 		// create the converter struct
 		file.Type().Id(converter.Config.Name).Struct()
@@ -100,4 +102,13 @@ func Generate(pattern string, mapping []comments.Converter, config Config) (*jen
 		}
 	}
 	return file, nil
+}
+
+func generateCommentOnStruct(file *jen.File, converter comments.Converter, config Config) {
+	s := config.CommentOnStruct
+	if config.CommentTemplate {
+		s = strings.ReplaceAll(s, "{{.packageName}}", config.Name)
+		s = strings.ReplaceAll(s, "{{.converterName}}", converter.Name)
+	}
+	file.Comment(s)
 }
