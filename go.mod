@@ -1,4 +1,4 @@
-module github.com/onfirebyte/goverter
+module github.com/peamverter/goverter
 
 go 1.16
 
