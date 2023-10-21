@@ -330,6 +330,9 @@ func parseMethodComment(comment string) (Method, error) {
 				}
 				m.Flags.Set(builder.FlagWrapErrors)
 				continue
+			case "node":
+				m.Flags.Set(builder.FlagNode)
+				continue
 			}
 			return m, fmt.Errorf("unknown %s comment: %s", prefix, line)
 		}
