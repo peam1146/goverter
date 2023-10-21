@@ -146,6 +146,10 @@ func (*Struct) Build(gen Generator, ctx *MethodContext, sourceID *xtype.JenID, s
 		stmt = append(stmt, jen.Id("_").Op("=").Add(sourceID.Code.Clone()))
 	}
 
+	if ctx.Flags.Has(FlagNode) {
+		stmt = append(stmt, jen.Id(name).Dot("InitId").Call())
+	}
+
 	return stmt, xtype.VariableID(jen.Id(name)), nil
 }
 

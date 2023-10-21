@@ -109,14 +109,19 @@ func (g *generator) registerMethod(converter types.Type, scope *types.Scope, met
 
 func (g *generator) validateMethods() error {
 	for _, method := range g.lookup {
+		isTargetStructPointer := method.Target.Pointer && method.Target.PointerInner.Struct
 		if method.Explicit && len(method.Fields) > 0 {
-			isTargetStructPointer := method.Target.Pointer && method.Target.PointerInner.Struct
 			if !method.Target.Struct && !isTargetStructPointer {
 				return fmt.Errorf("Invalid struct field mapping on method:\n    %s\n\nField mappings like goverter:map or goverter:ignore may only be set on struct or struct pointers.\nSee https://goverter.jmattheis.de/#/conversion/configure-nested", method.ID)
 			}
+
 			if overlapping, ok := g.findOverlappingExplicitStructMethod(method); ok {
 				return fmt.Errorf("Overlapping field mapping found.\n\nPlease move the field related goverter:* comments from this method:\n    %s\n\nto this method:\n    %s\n\nGoverter will use %s inside the implementation of %s, thus, field related settings would be ignored.", method.ID, overlapping.ID, overlapping.Name, method.Name)
 			}
+		}
+
+		if method.Flags.Has(builder.FlagNode) && !method.Target.Struct && !isTargetStructPointer {
+			return fmt.Errorf("Invalid struct field mapping on method:\n%s\n\nField mappings like goverter:node may only be set on struct or struct pointers.", method.ID)
 		}
 	}
 	return nil
